@@ -13,7 +13,6 @@ from . import forms
 from . import models
 from . import serializers
 
-
 @login_required
 def home(request:HttpRequest):
     files = models.UploadedFile.objects.all()
@@ -32,13 +31,17 @@ def file_upload(request:HttpRequest):
         form = forms.FileForm()
     return render(request, 'types_converter/file_upload.html', {'form': form})
 
+# Define a viewset for uploaded files, currently backbone of the API
 class UploadedFileViewSet(ModelViewSet):
     serializer_class = serializers.FileUploadSerializer
     # permission_classes = [permissions.IsAuthenticated]  # Add this line
 
+    # Define the queryset
     def get_queryset(self):
+        # Get all uploaded files ordered by upload date
         return models.UploadedFile.objects.all().order_by('-uploaded_at')
     
+    #Create action not used, TODO implement the file uploading on React
     def create(self, request:HttpRequest, *args, **kwargs):
         serializer = self.get_serializer(data = request.data)
         serializer.is_valid(raise_exception=True)
@@ -49,13 +52,17 @@ class UploadedFileViewSet(ModelViewSet):
     def perform_create(self, serializer):
         instance = serializer.save(uploader=self.request.user) 
         converter = DataTypeConverter(instance.file.path)
+        # Load the data from the file and infer the schema
+        # nrows allows to load only a subset of the data for infering the schema
         converter.load_data(nrows=1000)
         instance.schema = converter.infer_schema()
         instance.save()
-        
+    
+    # Define a custom action for getting the schema of a file
     @action(detail=True, methods=['get'])
     def schema(self, request, pk=None):
         file = self.get_object()
+        # Check if the schema is not set and save it in this case
         if file.schema is None:
             converter = DataTypeConverter(file.file.path)
             converter.load_data(nrows=1000)
@@ -67,7 +74,9 @@ class UploadedFileViewSet(ModelViewSet):
     @action(detail=True, methods=['get'])
     def sample(self, request, pk=None):
         file = self.get_object()
+        # Get the number of rows from the request parameters
         n_rows = int(request.GET.get('rows', 10))
+        # Check if the data should be converted
         converted = request.GET.get('converted', 'false')
 
         converter = DataTypeConverter(file_path=file.file.path, schema=file.schema)
