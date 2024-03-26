@@ -29,8 +29,11 @@ Follow these steps to run the application:
 2. Inside the root repository, create a virtual environment: `python -m venv ENV`
 3. Activate the virtual environment: `source ENV/bin/activate`
 4. Install the required Python packages: `pip install -r requirements.txt`
+6. Navigate to `rhombusAI/` and initialize the local database db.sqlit3: `python manage.py migrate`
 5. Navigate to `rhombusAI/frontend` and install the required Node.js packages: `npm install`
 6. Start the Django server in the `rhombusAI` directory: `python manage.py runserver`
 7. Start the React application in `rhombusAI/frontend` with `npm start`
+9. Generate 3 datasets from rhombusAI/types_converter/src/tests/: python dataset_generation.py 
+10. Play with application on your local machine http://127.0.0.1:8000 and upload these files
 
 (TODO: Create a Dockerfile and Docker image for hosting the application)
