@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Files</h2>
+    {% for file in files %}
+        <p>
+            <strong>Name</strong>: {{ file.file_name  }} --- <strong>created:</strong> {{file.uploaded_at}}:  
+            {% comment %} <a href="{% url 'file_detail' file.pk %}"> Analysis</a> {% endcomment %}
+            <a href="http://localhost:3000/file-analysis/{{ file.pk }}?url={{ file.file }}&name={{ file.file_name }}&size={{ file.file_size }}">
+                Analysis
+            </a>
+        </p>
+    {% endfor %}
+{% endblock content %}
