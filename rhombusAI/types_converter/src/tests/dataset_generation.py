@@ -2,6 +2,19 @@ import pandas as pd
 import numpy as np
 from faker import Faker
 import pandas as pd
+import pandas as pd
+
+# Generate the sample data
+data = {
+    'Name': ['Alice', 'Bob', 'Charlie', 'David', 'Eve'],
+    'Birthdate': ['1/01/1990', '2/02/1991', '3/03/1992', '4/04/1993', '5/05/1994'],
+    'Score': [90, 75, 85, 70, 'Not Available'],
+    'Grade': ['A', 'B', 'A', 'B', '']
+}
+
+df = pd.DataFrame(data)
+df.to_csv('data/sample_data.csv', index=False)
+
 
 # Generate a DataFrame with mixed data types
 data = {
